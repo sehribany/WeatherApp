@@ -8,11 +8,28 @@
 import SwiftUI
 
 struct WeatherCell: View {
+    let weather: WeatherData
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            HStack {
+                Text(weather.locationName)
+                    .foregroundColor(.black)
+                Spacer()
+                Text("\(weather.temperature, specifier: "%.1f") °C")
+                    .foregroundColor(.black)
+            }
+            Text("\(weather.highTemp, specifier: "%.1f") °C")
+                .foregroundColor(.black)
+            Text("\(weather.lowTemp, specifier: "%.1f") °C")
+                .foregroundColor(.black)
+            Text(weather.condition)
+                .foregroundColor(.black)
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(8)
+        .shadow(radius: 5)
+        .padding(.horizontal)
     }
-}
-
-#Preview {
-    WeatherCell()
 }
