@@ -4,7 +4,6 @@
 //
 //  Created by Şehriban Yıldırım on 5.05.2024.
 //
-
 import SwiftUI
 
 struct SearchBar: View {
@@ -14,20 +13,23 @@ struct SearchBar: View {
     var body: some View {
         HStack {
             TextField("Search for places", text: $text, onCommit: onSearch)
-                .padding(8)
-                .background(Color(.systemGray5))
+                .padding(10)
+                .background(.appBlack)
                 .cornerRadius(8)
-                .padding(.horizontal, 10)
+                .foregroundColor(.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8).stroke(.appLightPurple, lineWidth: 0.5))
+                .padding(.horizontal, 2)
 
             Button(action: {
                 onSearch()
+                self.text = ""
             }) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.appLightPurple)
             }
-            .padding(.trailing, 10)
         }
         .padding(.horizontal)
+        .background(.clear)
     }
 }
-
