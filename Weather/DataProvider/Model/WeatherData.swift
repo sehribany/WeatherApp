@@ -15,4 +15,5 @@ struct WeatherData {
     let highTemp: Double
     let lowTemp: Double
     var coordinate: CLLocationCoordinate2D
+    var icon: String
 }
