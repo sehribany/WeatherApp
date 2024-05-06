@@ -14,9 +14,10 @@ class MainViewModel: ObservableObject {
     @Published var cityAnnotations: [CityAnnotation] = []
     @Published var currentWeather : WeatherData?
     @Published var region         : MKCoordinateRegion?
-    private var cancellables      : Set<AnyCancellable> = []
-    @Published var isLoading  = false
-    @Published var searchText = ""
+    @Published var isLoading   = false
+    @Published var isSearching = false
+    @Published var searchText  = ""
+    private var cancellables: Set<AnyCancellable> = []
    
     private var locationManager = LocationManager()
     private var weatherManager  = WeatherManager()
@@ -29,7 +30,7 @@ class MainViewModel: ObservableObject {
         isLoading = true
         locationManager.requestLocation()
     }
-
+    
     private func setupLocationUpdates() {
         locationManager.$location
             .receive(on: DispatchQueue.main)
@@ -39,14 +40,13 @@ class MainViewModel: ObservableObject {
                 self?.updateRegionAndFetchWeather(for: location)
             }
             .store(in: &cancellables)
-        
         locationManager.requestLocation()
     }
 
     func updateRegionAndFetchWeather(for location: CLLocation) {
         let newRegion = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
-            span: MKCoordinateSpan(latitudeDelta: 1.2, longitudeDelta: 1.2)
+            span: MKCoordinateSpan(latitudeDelta: 7, longitudeDelta: 7)
         )
         self.region = newRegion
         fetchWeather(for: location)
@@ -66,14 +66,15 @@ class MainViewModel: ObservableObject {
                     condition: response.weather.first?.description ?? "No description",
                     highTemp: response.main.tempMax,
                     lowTemp: response.main.tempMin,
-                    coordinate: CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                    coordinate: CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
+                    icon: response.weather.first?.icon ?? ""
                 )
                 self?.weatherData.append(newWeatherData)
                 
                 let newAnnotation = CityAnnotation(
                     coordinate: newWeatherData.coordinate,
                     temperature: newWeatherData.temperature,
-                    weatherIcon: "cloud.sun.fill"
+                    weatherIcon: newWeatherData.icon
                 )
                 self?.cityAnnotations.append(newAnnotation)
             }
